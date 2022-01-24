@@ -1,0 +1,11 @@
+.avg-session-progress{
+    width: 600px !important;
+}
+/* .flatpickr-months , .flatpickr-prev-month, .flatpickr-days{
+    display: none !important;
+} */
+
+.main-menu.menu-light .navigation li a {
+
+    color:black !important;
+}
