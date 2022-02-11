@@ -127,6 +127,12 @@ export default [
       //      // newTab: true
       // }
     ]
+  },
+  {
+    id: "oP",
+    title: "Operations",
+    icon: <Grid size={20} />,
+    navLink: "/operations"   
   }
   // {
   //   id: 'policies',

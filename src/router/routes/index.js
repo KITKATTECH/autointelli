@@ -14,6 +14,7 @@ import Admin from './Admin_es'
 import EmailSettings from './EmailSettings'
 import Configwizard from './Config_wizard'
 import AppManagement from './App_management'
+import OperationsRoute from './operationsRoute'
 
 // ** Document title
 const TemplateTitle = '%s - AutoIntelli'
@@ -37,7 +38,8 @@ const Routes = [
   ...Admin,
   ...EmailSettings,
   ...Configwizard,
-  ...AppManagement
+  ...AppManagement,
+  ...OperationsRoute
 ]
 
 export { DefaultRoute, TemplateTitle, Routes }
