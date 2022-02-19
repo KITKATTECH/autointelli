@@ -6,21 +6,11 @@ import { Nav, NavItem, NavLink, Row, Col } from "reactstrap"
 const { Provider, Consumer } = React.createContext({})
 
 
-function style(bordered) {
-    return bordered ? {
-          borderLeft: "1px solid #ddd",
-          borderRight: "1px solid #ddd",
-          borderBottom: "1px solid #ddd",
-          padding: "20px"
-        } : { padding: "20px" }
-  }
 
 export default class Tabs extends Component {
-  static defaultProps = {
-    bordered: false,
+  static defaultProps = {    
     pills: false,
-    tabs: false,
-    onSetTab: () => {}
+    tabs: false    
   };
 
   state = {
@@ -33,11 +23,11 @@ export default class Tabs extends Component {
   static Tab = ({ title = "", children }) => (
       
     <Consumer>
-      {({ tab, setTab }) => (
+      {({ tab, settab }) => (
         <NavItem>
           <NavLink
             style={{backgroundColor:tab === title ? "#1EADD9" : "", borderRadius:tab === title ? "50px" : "", fontSize:"12px"}}
-            onClick={() => setTab({ title, children })}
+            onClick={() => settab({ title, children })}
             href="javascript:void(0);"
             active={tab === title}
           >
@@ -48,19 +38,21 @@ export default class Tabs extends Component {
     </Consumer>    
   );
 
-  setTab = ({ title, children }) => {
-    const { onSetTab } = this.props
+  settab = ({ title, children }) => {    
+    const { changetab, getTab } = this.props
     this.setState({ tab: title, content: children })
+    getTab(title)
     return (
-      typeof onSetTab === "function" &&
-      onSetTab({ tab: title, content: children })
+      typeof changetab === "function" &&
+      changetab({ tab: title, content: children })
     )
   };
+
 
   getProps = () => {
     return {
       ...this.state,
-      setTab: this.setTab
+      settab: this.settab
     }
   };
 
@@ -72,24 +64,25 @@ export default class Tabs extends Component {
     } = this.props
     if (!children) return
     if (!length) {
-      this.setTab(children.props)
+      this.settab(children.props)
     } else if (length > 0) {
-      this.setTab(children[0].props)
+      this.settab(children[0].props)
     }
   }
 
   
   render() {
+    const {colVal}=this.props
     return (
         <Row>
-          <Col md="2"></Col>
-          <Col md="10">
+          <Col md={colVal === 8 ?"2":"0"}></Col>
+          <Col md={colVal}>
       <Provider value={this.getProps()}>
         <Nav {...this.props}>{this.props.children}</Nav>
-        <div style={style(this.props.bordered)}>{this.state.content}</div>
+        <div >{this.state.content}</div>
       </Provider>
       </Col>
-      <Col md="2"></Col>
+      <Col md={colVal === 8 ?"2":"0"}></Col>
       </Row>
     )
   }

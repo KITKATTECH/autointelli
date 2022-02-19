@@ -1,7 +1,7 @@
 import { Row, Col, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import '@styles/react/libs/charts/apex-charts.scss'
 import BarCharts from "./Charts/BarCharts"
-import FilteredTabs from "./FilterTabs"
+import FilteredTabs from "../Tabs/FilterTabs"
 import Component from "@reactions/component"
 import LineChart from "./Charts/LineChart"
 import AreaChart from "./Charts/AreaChart"
@@ -12,6 +12,7 @@ import { Users, AlertTriangle, Volume2 } from 'react-feather'
 
 const Operations = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [tabInfo, setTabInfo] = useState()
 
  const toggle = () => {
     setDropdownOpen(!dropdownOpen)
@@ -45,6 +46,10 @@ const Operations = () => {
       }
   ]
 
+  const getTabInfor = (value) => {
+    setTabInfo(value)
+}
+
     return (
       <div>
         <div className='filterContainer'>
@@ -57,7 +62,7 @@ const Operations = () => {
       {({ state, setState }) => (
         <div >
           
-          <FilteredTabs pills onSetTab={({ tab }) => setState({ tab })}>
+          <FilteredTabs pills settab={({ tab }) => setState({ tab })} colVal={8} getTab={getTabInfor}> 
              {filterConditions.map((data, index) => {
               return (<FilteredTabs.Tab title={data.label} />)
              }                       
@@ -98,19 +103,7 @@ const Operations = () => {
         <Col xs='7'>
           <BarCharts title="Host Availablity" />
         </Col>
-      </Row>
-      {/* <Dropdown isOpen={dropdownOpen} toggle={toggle} >
-        <DropdownToggle style={{backgroundColor:"red !important"}}  caret >
-          Dropdown
-        </DropdownToggle>
-        <DropdownMenu>
-          <DropdownItem header>Header</DropdownItem>
-          <DropdownItem disabled>Action</DropdownItem>
-          <DropdownItem>Another Action</DropdownItem>
-          <DropdownItem divider />
-          <DropdownItem>Another Action</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>  */}
+      </Row>      
       <select name="u123" id="au" style={{marginBottom:'20px'}}>
     <option value="volvo">u123.au.xy</option>    
   </select>

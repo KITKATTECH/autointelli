@@ -1,0 +1,41 @@
+#cisoTable {
+    border-collapse: collapse;
+    width:100%;
+    overflow:auto;
+    table-layout:fixed;
+    margin:0;
+    padding:2px;    
+  }
+
+ 
+
+   #cisoTable tr {
+    border: 1px solid white;    
+    background-color: white;    
+  }
+
+  #cisoTable th {
+    border: 1px solid white;
+    padding:20px;
+  }
+
+  #cisoTable td {    
+    padding: 4px;
+    border: 1px solid white;    
+  }
+  
+  #cisoTable tr:nth-child(even){background-color: #F2F4F5;}
+  
+
+  
+  #cisoTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #F4CF69;
+    color: black;
+    font-weight: 100;
+  }
+
+
+  

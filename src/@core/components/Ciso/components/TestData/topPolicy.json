@@ -1,0 +1,41 @@
+[{
+   "action":"Allow",
+   "rule":"TCS_SEEM_POC",
+   "sourceAddress":"10.100.1.23",
+   "destination":"10.100.1.23",
+   "sourceHostName":"TCS_SEEM_POC",
+   "byte":"10"   
+   },
+   {
+    "action":"Allow",
+    "rule":"TCS_SEEM_POC",
+    "sourceAddress":"10.100.1.23",
+    "destination":"10.100.1.23",
+    "sourceHostName":"TCS_SEEM_POC",
+    "byte":"5"   
+    },
+    {
+        "action":"Allow",
+        "rule":"TCS_SEEM_POC",
+        "sourceAddress":"10.100.1.23",
+        "destination":"10.100.1.23",
+        "sourceHostName":"TCS_SEEM_POC",
+        "byte":"7"   
+        },{
+            "action":"Allow",
+            "rule":"TCS_SEEM_POC",
+            "sourceAddress":"10.100.1.23",
+            "destination":"10.100.1.23",
+            "sourceHostName":"TCS_SEEM_POC",
+            "byte":"1"   
+            },
+            {
+                "action":"Allow",
+                "rule":"TCS_SEEM_POC",
+                "sourceAddress":"10.100.1.23",
+                "destination":"10.100.1.23",
+                "byte":"5" ,
+                "sourceHostName":"TCS_SEEM_POC"
+                }
+
+]
