@@ -1,139 +1,415 @@
-import { Row, Col, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
-import '@styles/react/libs/charts/apex-charts.scss'
-import BarCharts from "./Charts/BarCharts"
-import FilteredTabs from "../Tabs/FilterTabs"
-import Component from "@reactions/component"
-import LineChart from "./Charts/LineChart"
-import AreaChart from "./Charts/AreaChart"
-import "./index.css"
-import { useState } from 'react'
-import StatsHorizontal from './StatsHorizontal'
-import { Users, AlertTriangle, Volume2 } from 'react-feather'
+/*eslint-disable */
+import { Row, Col } from "reactstrap";
+import "@styles/react/libs/charts/apex-charts.scss";
+import BarCharts from "./Charts/BarCharts";
+import FilteredTabs from "../Tabs/FilterTabs";
+import Component from "@reactions/component";
+import LineChart from "./Charts/Chart";
+import "./index.css";
+import { useEffect, useState } from "react";
+import StatsHorizontal from "./StatsHorizontal";
+import AreaChart from "./Charts/AreaChart";
+import { AlertTriangle, Volume2 } from "react-feather";
+import axios from "axios";
 
 const Operations = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [tabInfo, setTabInfo] = useState()
+  const [tabInfo, setTabInfo] = useState();
+  const [filterData, setFilterData] = useState([]);
+  const [hosts, setHosts] = useState([]);
+  const [selectHost, setSelectHost] = useState([]);
+  const [option, setOptions] = useState({});
+  const [memoryOption, setMemoryOptions] = useState({});
+  const [hostInterface, setHostInterface] = useState([]);
+  const [selectHostInterface, setSelectHostInterface] = useState();
+  const [utilOptions, setUtilOptions] = useState({});
+  const [gaugeOption, setGaugeOption] = useState({});
 
- const toggle = () => {
-    setDropdownOpen(!dropdownOpen)
-  }
-  const renderFilter = () => {
-
-    const filterConditions = [
-      {
-        id:"1",
-        label:"All"
-      },
-      {
-        id:"2",
-        label:"Today"
-      },
-      {
-        id:"2",
-        label:"Yesterday"
-      },
-      {
-        id:"3",
-        label:"This Week"
-      },
-      {
-        id:"4",
-        label:"This Month"
-      },
-      {
-        id:"5",
-        label:"Last Month"
+  useEffect(() => {
+    axios.get("http://10.200.205.16/soc/filters").then((response) => {
+      if (response.data) {
+        const socFilters = [];
+        const { data } = response.data;
+        data.map((element, index) => {
+          if (index === 0) {
+            setTabInfo(element);
+          }
+          socFilters.push({
+            id: index,
+            label: element,
+          });
+        });
+        setFilterData(socFilters);
       }
-  ]
+    });
 
-  const getTabInfor = (value) => {
-    setTabInfo(value)
-}
+    axios.get("http://10.200.205.16/soc/hosts").then((response) => {
+      if (response.data) {
+        const { data } = response.data;
+        const socHosts = [];
+        data.map((element, index) => {
+          if (index === 0) {
+            setSelectHost(element);
+          }
+          socHosts.push(element);
+        });
+        setHosts(socHosts);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    const apiParams = {
+      host: selectHost,
+      filter: tabInfo,
+    };
+    axios
+      .post("http://10.200.205.16/soc/cpu/utilization", apiParams)
+      .then((response) => {
+        if (response.data) {
+          const x = [];
+          const y = [];
+          const { data } = response.data;
+          for (var i = 0; i < data.length; i++) {
+            if (data[i].time) {
+              x.push(String(data[i].time));
+              y.push(String(data[i].value));
+            }
+          }
+
+          setOptions({
+            xAxis: {
+              type: "category",
+              data: x,
+            },
+            yAxis: {
+              type: "value",
+            },
+            series: [
+              {
+                data: y,
+                type: "line",
+                color: "#E7D7BF",
+              },
+            ],
+          });
+        }
+      });
+
+    axios
+      .post("http://10.200.205.16/soc/memory/utilization", apiParams)
+      .then((response) => {
+        if (response.data) {
+          const finalData = response.data.data["TOTAL MEMORY"];
+
+          const x = [];
+          const y = [];
+
+          for (var property in finalData) {
+            x.push(String(property));
+            y.push(finalData[property]);
+          }
+
+          setMemoryOptions({
+            xAxis: {
+              type: "category",
+              data: x,
+            },
+            yAxis: {
+              type: "value",
+            },
+            series: [
+              {
+                data: y,
+                type: "line",
+                color: "#E7D7BF",
+              },
+            ],
+          });
+        }
+      });
+
+    axios
+      .post("http://10.200.205.16/soc/host/availability", apiParams)
+      .then((response) => {
+        if (response.data) {
+          setGaugeOption({
+            tooltip: {
+              formatter: "{a} <br/>{b} : {c}%",
+            },
+            series: [
+              {
+                name: "Pressure",
+                type: "gauge",
+                progress: {
+                  show: true,
+                },
+                detail: {
+                  valueAnimation: true,
+                  formatter: "{value}",
+                },
+                data: [
+                  {
+                    value: response.data.data.percentage,
+                    name: "Percentage",
+                  },
+                ],
+              },
+            ],
+          });
+        }
+      });
+  }, [selectHost, tabInfo]);
+
+  useEffect(() => {
+    const apiParams = {
+      host: selectHost,
+    };
+    axios
+      .post("http://10.200.205.16/soc/interfaces", apiParams)
+      .then((response) => {
+        if (response.data) {
+          if (response.data.data !== "no data")
+            setHostInterface(response.data.data.interface);
+        }
+      });
+  }, [selectHost]);
+
+  useEffect(() => {
+    const apiParams = {
+      host: selectHost,
+      interface: "INTTRAF3",
+      filter: tabInfo,
+    };
+    axios
+      .post("http://10.200.205.16/soc/interface/utilization", apiParams)
+      .then((response) => {
+        if (response.data) {
+          const finalData = response.data.data[apiParams.interface];
+
+          if (finalData !== undefined) {
+            const inBand = finalData.inBandwidth;
+            const outBand = finalData.outBandwidth;
+
+            const x = [];
+            const y1 = [];
+            const y2 = [];
+
+            for (var property in inBand) {
+              x.push(String(property));
+              y1.push(inBand[property]);
+            }
+            for (var property in outBand) {
+              y2.push(outBand[property]);
+            }
+
+            setUtilOptions({
+              backgroundColor: "black",
+              tooltip: {
+                trigger: "axis",
+                position: function (pt) {
+                  return [pt[0], "10%"];
+                },
+              },
+              title: {
+                left: "center",
+                text: "Test Data",
+                textStyle: {
+                  color: "white",
+                  fontStyle: "normal",
+                  fontSize: "14px",
+                },
+              },
+              legend: {
+                data: ["A series", "B series", "C series"],
+                width: 350,
+                left: 0,
+                bottom: "0%",
+                textStyle: {
+                  color: "white",
+                  fontStyle: "normal",
+                  fontSize: "14px",
+                },
+              },
+              xAxis: {
+                type: "category",
+                boundaryGap: false,
+                data: x,
+                color: "#4A494E",
+              },
+              yAxis: {
+                type: "value",
+                boundaryGap: [0, "100%"],
+                nameTextStyle: {
+                  color: "red",
+                },
+              },
+              series: [
+                {
+                  name: "A series",
+                  type: "line",
+                  smooth: true,
+                  symbol: "none",
+                  sampling: "average",
+                  itemStyle: {
+                    color: "blue",
+                  },
+                  data: y1,
+                },
+                {
+                  name: "B series",
+                  type: "line",
+                  smooth: true,
+                  symbol: "none",
+                  sampling: "average",
+                  itemStyle: {
+                    color: "#F7DC77",
+                  },
+                  areaStyle: {
+                    color: "#000000",
+                  },
+                  data: y2,
+                },
+              ],
+            });
+          }
+        }
+      });
+  }, [tabInfo]);
+
+  const renderFilter = () => {
+    const getTabInfor = (value) => {
+      setTabInfo(value);
+    };
 
     return (
       <div>
-        <div className='filterContainer'>
-        <div className='filterHeader' >  
-        <h5>Filter</h5>                
-        </div>   
-        <div>
-           
-    <Component initialState={{ tab: "" }}>
-      {({ state, setState }) => (
-        <div >
-          
-          <FilteredTabs pills settab={({ tab }) => setState({ tab })} colVal={8} getTab={getTabInfor}> 
-             {filterConditions.map((data, index) => {
-              return (<FilteredTabs.Tab title={data.label} />)
-             }                       
-             )}                               
-          </FilteredTabs>
-          
+        <div className="filterContainer">
+          <div className="filterHeader">
+            <h5>Filter</h5>
+          </div>
+          <div>
+            <Component initialState={{ tab: "" }}>
+              {({ state, setState }) => (
+                <div>
+                  <FilteredTabs
+                    pills
+                    settab={({ tab }) => setState({ tab })}
+                    colVal={8}
+                    getTab={getTabInfor}
+                  >
+                    {filterData.map((data, index) => {
+                      return <FilteredTabs.Tab title={data.label} />;
+                    })}
+                  </FilteredTabs>
+                </div>
+              )}
+            </Component>
+          </div>
         </div>
-      )}
-    </Component>
-  
-          </div>     
-        </div>
-        
       </div>
-    )
-  }
- 
-  return (
-    <div id='dashboard-analytics'>
-        
-      <Row className='match-height mb-2'> 
-        <Col lg='12' sm='12' xs={12} md={12}>  
-          {renderFilter()}
-          </Col>
-        </Row>
+    );
+  };
 
-        <Row className='match-height'> 
+  return (
+    <div id="dashboard-analytics">
+      <Row className="match-height mb-2">
+        <Col lg="12" sm="12" xs={12} md={12}>
+          {filterData.length > 0 ? renderFilter() : null}
+        </Col>
+      </Row>
+
+      <Row className="match-height">
         {/* Stats With Icons Horizontal */}
-        <Col lg='3' sm='6' >
-        <StatsHorizontal   color="primary" stats='0' statTitle='Host Down' color="bg-primary" icon={<AlertTriangle size={21}  />} />
+        <Col lg="3" sm="6">
+          <StatsHorizontal
+            color="primary"
+            stats="0"
+            statTitle="Host Down"
+            color="bg-primary"
+            icon={<AlertTriangle size={21} />}
+          />
         </Col>
-        <Col lg='3' sm='6'>
-          <StatsHorizontal icon={<Volume2 size={21} />}  color="bg-success" stats='5' statTitle='Hosts Up' />
+        <Col lg="3" sm="6">
+          <StatsHorizontal
+            icon={<Volume2 size={21} />}
+            color="bg-success"
+            stats="5"
+            statTitle="Hosts Up"
+          />
         </Col>
-        </Row>
-      
-       <Row className='match-height'>
-        <Col xs='7'>
+      </Row>
+
+      <Row className="match-height">
+        <Col xs="7">
           <BarCharts title="Host Availablity" />
         </Col>
-      </Row>      
-      <select name="u123" id="au" style={{marginBottom:'20px'}}>
-    <option value="volvo">u123.au.xy</option>    
-  </select>
-    
-      <Row className='match-height'>      
-        <Col xs='6'>        
-      
-          <BarCharts title="Interface Availablity" />
-        </Col>
-        <Col xs='6'>
-          <LineChart title="CPU" />
-        </Col>
-      </Row> 
+      </Row>
+      <select
+        name="u123"
+        id="au"
+        style={{ marginBottom: "20px" }}
+        handleChange={(e) => setSelectHostI(e.target.value)}
+      >
+        <option>Select Host</option>
 
-      <Row className='match-height'>
-        <Col xs='6'>
-        <LineChart title="Memory" />
-        </Col>
-        <Col xs='6'>
-          <LineChart title="Disk" />
-        </Col>
-      </Row>   
+        {hosts.length > 0 &&
+          hosts.map((element, index) => {
+            return (
+              <option
+                value={element}
+                key={index}
+                selected={index === 0 ? true : false}
+              >
+                {element}
+              </option>
+            );
+          })}
+      </select>
 
-      <Row className='match-height'>
-        <Col xs='12'>
-        <AreaChart />
-        </Col>        
-      </Row>      
-       </div>
-  )
-}
+      <Row className="match-height">
+        <Col xs="6">
+          <LineChart title="" option={gaugeOption} />
+        </Col>
+        <Col xs="6">
+          <LineChart title="CPU" option={option} />
+        </Col>
+      </Row>
+      <Row className="match-height">
+        <Col xs="6">
+          <LineChart title="Memory" option={memoryOption} />
+        </Col>
+      </Row>
 
-export default Operations
+      <select
+        name="selectHostInterface"
+        style={{ marginBottom: "20px" }}
+        value={selectHostInterface}
+        handleChange={(e) => setSelectHostInterface(e.target.value)}
+      >
+        <option>Select Interface</option>
+
+        {hostInterface.length > 0 &&
+          hostInterface.map((element, index) => {
+            return (
+              <option
+                value={element}
+                key={index}
+                selected={index === 1 ? true : false}
+              >
+                {element}
+              </option>
+            );
+          })}
+      </select>
+
+      <Row className="match-height">
+        <Col xs="12">
+          {/* <AreaChart /> */}
+          <LineChart title="" option={utilOptions} />
+        </Col>
+      </Row>
+    </div>
+  );
+};
+
+export default Operations;
