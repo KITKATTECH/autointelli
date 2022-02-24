@@ -76,19 +76,40 @@ const Operations = () => {
             }
           }
 
+          const labelOption = {
+            show: true,
+            position: "insideBottom",
+            distance: 15,
+            align: "left",
+            verticalAlign: "middle",
+            rotate: 90,
+            formatter: "{c}  {name|{a}}",
+            fontSize: 16,
+            rich: {
+              name: {},
+            },
+          };
+
           setOptions({
+            legend: {
+              data: ["Time", "Percentage"],
+            },
+            tooltip: {
+              trigger: "axis",
+            },
             xAxis: {
               type: "category",
               data: x,
             },
             yAxis: {
               type: "value",
+              name: "Percentage",
             },
             series: [
               {
                 data: y,
                 type: "line",
-                color: "#E7D7BF",
+                color: "LightBlue",
               },
             ],
           });
@@ -110,12 +131,28 @@ const Operations = () => {
           }
 
           setMemoryOptions({
+            tooltip: {
+              trigger: "axis",
+            },
+            legend: {
+              data: ["Time", "GB"],
+            },
             xAxis: {
               type: "category",
               data: x,
+              axisTick: { show: false },
             },
             yAxis: {
               type: "value",
+              name: "GB",
+              nameTextStyle: {
+                verticalAlign: "middle",
+                rich: {
+                  a: {
+                    // `verticalAlign` is not set, then it will be bottom
+                  },
+                },
+              },
             },
             series: [
               {
@@ -203,29 +240,25 @@ const Operations = () => {
             }
 
             setUtilOptions({
-              backgroundColor: "black",
+              // backgroundColor: "black",
               tooltip: {
                 trigger: "axis",
-                position: function (pt) {
-                  return [pt[0], "10%"];
-                },
               },
               title: {
-                left: "center",
-                text: "Test Data",
+                text: "Interface Utilization",
                 textStyle: {
-                  color: "white",
                   fontStyle: "normal",
                   fontSize: "14px",
+                  align: "left",
+                  color: "#7F7BAC",
                 },
               },
               legend: {
-                data: ["A series", "B series", "C series"],
+                data: ["In Bandwidth", "Out Bandwidth"],
                 width: 350,
                 left: 0,
                 bottom: "0%",
                 textStyle: {
-                  color: "white",
                   fontStyle: "normal",
                   fontSize: "14px",
                 },
@@ -234,18 +267,14 @@ const Operations = () => {
                 type: "category",
                 boundaryGap: false,
                 data: x,
-                color: "#4A494E",
               },
               yAxis: {
                 type: "value",
                 boundaryGap: [0, "100%"],
-                nameTextStyle: {
-                  color: "red",
-                },
               },
               series: [
                 {
-                  name: "A series",
+                  name: "In Bandwidth",
                   type: "line",
                   smooth: true,
                   symbol: "none",
@@ -253,10 +282,13 @@ const Operations = () => {
                   itemStyle: {
                     color: "blue",
                   },
+                  // areaStyle: {
+                  //   color: "#9BDDF7",
+                  // },
                   data: y1,
                 },
                 {
-                  name: "B series",
+                  name: "Out Bandwidth",
                   type: "line",
                   smooth: true,
                   symbol: "none",
@@ -264,9 +296,9 @@ const Operations = () => {
                   itemStyle: {
                     color: "#F7DC77",
                   },
-                  areaStyle: {
-                    color: "#000000",
-                  },
+                  // areaStyle: {
+                  //   color: "lightyellow",
+                  // },
                   data: y2,
                 },
               ],
@@ -318,57 +350,39 @@ const Operations = () => {
         </Col>
       </Row>
 
-      <Row className="match-height">
-        {/* Stats With Icons Horizontal */}
-        <Col lg="3" sm="6">
-          <StatsHorizontal
-            color="primary"
-            stats="0"
-            statTitle="Host Down"
-            color="bg-primary"
-            icon={<AlertTriangle size={21} />}
-          />
-        </Col>
-        <Col lg="3" sm="6">
-          <StatsHorizontal
-            icon={<Volume2 size={21} />}
-            color="bg-success"
-            stats="5"
-            statTitle="Hosts Up"
-          />
-        </Col>
-      </Row>
-
-      <Row className="match-height">
+      {/* <Row className="match-height">
         <Col xs="7">
           <BarCharts title="Host Availablity" />
         </Col>
-      </Row>
-      <select
-        name="u123"
-        id="au"
-        style={{ marginBottom: "20px" }}
-        handleChange={(e) => setSelectHostI(e.target.value)}
-      >
-        <option>Select Host</option>
+      </Row> */}
+      <span>
+        Host :
+        <select
+          name="u123"
+          id="au"
+          style={{ marginBottom: "20px" }}
+          handleChange={(e) => setSelectHostI(e.target.value)}
+          style={{ marginLeft: "2px" }}
+        >
+          <option>Select Host</option>
 
-        {hosts.length > 0 &&
-          hosts.map((element, index) => {
-            return (
-              <option
-                value={element}
-                key={index}
-                selected={index === 0 ? true : false}
-              >
-                {element}
-              </option>
-            );
-          })}
-      </select>
-
-      <Row className="match-height">
+          {hosts.length > 0 &&
+            hosts.map((element, index) => {
+              return (
+                <option
+                  value={element}
+                  key={index}
+                  selected={index === 0 ? true : false}
+                >
+                  {element}
+                </option>
+              );
+            })}
+        </select>
+      </span>
+      <Row className="match-height" style={{ marginTop: "20px" }}>
         <Col xs="6">
-          <LineChart title="" option={gaugeOption} />
+          <LineChart title="Host Availability" option={gaugeOption} />
         </Col>
         <Col xs="6">
           <LineChart title="CPU" option={option} />
@@ -380,28 +394,31 @@ const Operations = () => {
         </Col>
       </Row>
 
-      <select
-        name="selectHostInterface"
-        style={{ marginBottom: "20px" }}
-        value={selectHostInterface}
-        handleChange={(e) => setSelectHostInterface(e.target.value)}
-      >
-        <option>Select Interface</option>
+      <span>
+        Interface :
+        <select
+          name="selectHostInterface"
+          style={{ marginBottom: "20px" }}
+          value={selectHostInterface}
+          handleChange={(e) => setSelectHostInterface(e.target.value)}
+          style={{ marginLeft: "2px" }}
+        >
+          <option>Select Interface</option>
 
-        {hostInterface.length > 0 &&
-          hostInterface.map((element, index) => {
-            return (
-              <option
-                value={element}
-                key={index}
-                selected={index === 1 ? true : false}
-              >
-                {element}
-              </option>
-            );
-          })}
-      </select>
-
+          {hostInterface.length > 0 &&
+            hostInterface.map((element, index) => {
+              return (
+                <option
+                  value={element}
+                  key={index}
+                  selected={index === 1 ? true : false}
+                >
+                  {element}
+                </option>
+              );
+            })}
+        </select>
+      </span>
       <Row className="match-height">
         <Col xs="12">
           {/* <AreaChart /> */}
