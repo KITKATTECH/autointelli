@@ -1,6 +1,18 @@
 import axios from 'axios'
-import jwtDefaultConfig from './jwtDefaultConfig'
+import { handleLogout } from '@store/actions/auth'
+import { Link, useHistory } from 'react-router-dom'
 
+import jwtDefaultConfig from './jwtDefaultConfig'
+//import { withRouter } from 'react-router-dom'
+// const Out = () => {
+//   const history = useHistory()
+//   console.log('hook')
+//   console.log(history)
+//   history.push(`/login`)
+//   use
+//   return (
+//     <div className=''></div>)
+// }
 export default class JwtService {
   // ** jwtConfig <= Will be used by this service
   jwtConfig = { ...jwtDefaultConfig }
@@ -39,6 +51,15 @@ export default class JwtService {
         // ** const { config, response: { status } } = error
         const { config, response } = error
         const originalRequest = config
+        console.log(response.status)
+        if (response.status === 401) {
+        // <Out/>
+         // out()
+           //handleLogout()
+         
+          //history.push(`/login`)
+          //Promise.reject('/login')
+        }
 
         // ** if (status === 401) {
         if (response && response.status === 401) {
@@ -106,6 +127,11 @@ export default class JwtService {
   refreshToken() {
     return axios.post(this.jwtConfig.refreshEndpoint, {
       refreshToken: this.getRefreshToken()
-    })
-  }
+    }).then(response => response.data).then(result => {
+      console.log(result)
+    }, 
+   error => {
+    console.log(error)
+  })
+}
 }

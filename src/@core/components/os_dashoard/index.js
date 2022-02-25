@@ -12,7 +12,7 @@ import Sales from '@src/views/ui-elements/cards/analytics/Sales'
 import AvgSessions from '@src/views/ui-elements/cards/analytics/AvgSessions'
 import CardAppDesign from '@src/views/ui-elements/cards/advance/CardAppDesign'
 import SupportTracker from '@src/views/ui-elements/cards/analytics/SupportTracker'
-import { Row, Col, Card, CardHeader, CardTitle, CardBody, Media, ListGroup, ListGroupItem, FormGroup, Label, Input, Form, Button, CardSubtitle } from 'reactstrap'
+import {Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Card, CardHeader, CardTitle, CardBody, Media, ListGroup, ListGroupItem, FormGroup, Label, Input, Form, Button, CardSubtitle } from 'reactstrap'
 import OrdersReceived from '@src/views/ui-elements/cards/statistics/OrdersReceived'
 import CardCongratulations from '@src/views/ui-elements/cards/advance/CardCongratulations'
 import SubscribersGained from '@src/views/ui-elements/cards/statistics/SubscribersGained'
@@ -30,6 +30,7 @@ import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import Apiurl from '../../../configs/RootAPI_url'
 import ChartjsLineChart from './components/ChartjsLineChart'
+import ChartjsLineChartModel from './components/ChartjsLineChartModel'
 import ProductOrders from './components/ProductOrders'
 import Info from './components/Info'
 import ButtonLine from './components/Button_line'
@@ -39,6 +40,7 @@ const Hostdetails = () => {
   const { colors } = useContext(ThemeColors)
   const { register, errors, handleSubmit } = useForm()
   const context = useContext(ThemeColors)
+  const [basicModal, setBasicModal] = useState(false)
   const [apps, setapps] = useState([])
   const [appid, setappsid] = useState('')
   const [host, sethost] = useState([])
@@ -46,7 +48,9 @@ const Hostdetails = () => {
   const [hostval, sethostval] = useState('')
   const [time, settime] = useState([])
   const [mins, setmins] = useState([])
-
+  const [modaldta, setmodaldta] = useState([])
+  const [modalname, setmodalname] = useState('')
+  
   const avatarGroupArr = [
     {
       title: 'Billy Hopkins',
@@ -344,7 +348,19 @@ setcpu([])
   const getService = (val, time) => {
     axios.get(`${Apiurl}dashboards/os/${val}/servicestatus`).then(response => response.data).then(result => {
       console.log(result.message)
-      setservices2(result.message)    
+     // setservices2(result.message) 
+      if (result.type === 'failure') {
+        //setflag5(false)
+
+       // setmem([{ data: [0, 0], label: 'No Data Found', time: ['0:00', '0:00'], x_axis: [0, 0] }], [{ Title: 'No Data Found', Type: 'PIE', data: [] }])
+       setservices2([])
+
+      } else {
+        //setflag5(true)
+
+        setservices2(result.message)
+
+      }    
       //console.log(result.message.length, count1, count2)
       //   props.userListcount(result.message.length, count1, count2)
     }, error => {
@@ -354,7 +370,19 @@ setcpu([])
   const getProcess = (val, time) => {
     axios.get(`${Apiurl}dashboards/os/${val}/processstatus`).then(response => response.data).then(result => {
       console.log(result.message)
-      setprocess(result.message)    
+     // setprocess(result.message)    
+      if (result.type === 'failure') {
+        //setflag5(false)
+
+       // setmem([{ data: [0, 0], label: 'No Data Found', time: ['0:00', '0:00'], x_axis: [0, 0] }], [{ Title: 'No Data Found', Type: 'PIE', data: [] }])
+       setprocess([])
+
+      } else {
+        //setflag5(true)
+
+        setprocess(result.message)
+
+      }
       //console.log(result.message.length, count1, count2)
       //   props.userListcount(result.message.length, count1, count2)
     }, error => {
@@ -365,7 +393,19 @@ setcpu([])
   const getAlerts = (val, time) => {
     axios.get(`${Apiurl}dashboards/os/${val}/serveralerts`).then(response => response.data).then(result => {
       console.log(result.message)
-      setalerts(result.message)    
+      //setalerts(result.message)   
+      if (result.type === 'failure') {
+        //setflag5(false)
+
+       // setmem([{ data: [0, 0], label: 'No Data Found', time: ['0:00', '0:00'], x_axis: [0, 0] }], [{ Title: 'No Data Found', Type: 'PIE', data: [] }])
+       setalerts([])
+
+      } else {
+        //setflag5(true)
+
+        setalerts(result.message)
+
+      } 
       //console.log(result.message.length, count1, count2)
       //   props.userListcount(result.message.length, count1, count2)
     }, error => {
@@ -509,7 +549,7 @@ setcpu([])
             /> : <></>}
         </Col>
         <Col lg='3' sm='12'>
-          <Card>
+          <Card  className="scroll">
             {/* <CardHeader className='align-items-end float-right justify-content- '>
               <CardTitle tag='h4'>{'Alerts'}</CardTitle>
             </CardHeader> */}
@@ -545,17 +585,61 @@ setcpu([])
 
       <Col lg='3' sm='12'>
           {flag1  ?
-            <SessionByDevice primary={'#868282'}
-              warning={'#EF97C6'}
-              danger={context.colors.danger.main}
-              warning={'#EF97C6'}
-              danger={context.colors.danger.main}
-              name={cpu.length ? cpu[1][0].Title : ''}
-              type={''}
-              range={cpu.length ? cpu[1][0].data : [0, 0]}
-              units={cpu.length ? cpu[1][0].Title : ''}
-              lineData={cpu.length ? cpu[0] : []}
-            /> : null}
+            // <SessionByDevice primary={'#868282'}
+            //   warning={'#EF97C6'}
+            //   danger={context.colors.danger.main}
+            //   warning={'#EF97C6'}
+            //   danger={context.colors.danger.main}
+            //   name={cpu.length ? cpu[1][0].Title : ''}
+            //   type={''}
+            //   range={cpu.length ? cpu[1][0].data : [0, 0]}
+            //   units={cpu.length ? cpu[1][0].Title : ''}
+            //   lineData={cpu.length ? cpu[0] : []}
+            // /> 
+            <Card
+            onClick={() => {
+              setmodaldta(cpu.length  ? cpu[0] : [])
+              setmodalname(cpu.length ? cpu[1][0].Title : '')
+          
+              setBasicModal(!basicModal)
+              
+              }}
+              style={{cursor:'pointer'}}
+            >
+            {/* <CardHeader className='align-items-end float-right justify-content-end '>
+              <CardTitle tag='h4'>{ props.name}</CardTitle>            
+            </CardHeader> */}
+            <CardSubtitle tag='h6' className='d-flex justify-content-center align-items-center mt-1 '>{cpu.length ? cpu[1][0].Title : ''}</CardSubtitle>
+          
+             {/* <CardSubtitle tag='h6'  className='ml-2'>in {props.type}</CardSubtitle> */}
+            <CardBody>
+              <Row>
+                {/* <Col lg='5' sm='12'>
+          
+              <Chart className='my-1' options={options} series={series !== undefined ? [series[1], series[0]] : [0, 0]} type='donut' height={200} />
+              <CardSubtitle tag='h2' className='d-flex justify-content-center align-items-center -mt-2x'>{series !== undefined ? series[1] : 0}</CardSubtitle>
+              <CardSubtitle tag='h4' className='d-flex justify-content-center align-items-center mt-1'>{props.units}{props.type}</CardSubtitle>
+              
+              </Col> */}
+              <Col lg='12' sm='0'>
+              <ChartjsLineChart 
+               warningColorShade='#ffa500'
+                  lineChartDanger='#ff4961'
+                  lineChartPrimary='#666ee8'
+                    labelColor="#b4b7bd"
+                    tooltipShadow={"rgba(0, 0, 0, 0.25)"}
+                    lineData ={cpu.length  ? cpu[0] : []}
+                   // lineData={props !== undefined && props.lineData !== undefined && props.lineData.length ? props.lineData : []}
+                    gridLineColor="rgba(200, 200, 200, 0.2)" />
+                   </Col>
+                  </Row>
+              {/* {renderChartInfo()} */}
+              
+               
+            </CardBody>
+          </Card>
+            
+            : null}
 
           {/* </Col>
         
@@ -571,23 +655,75 @@ setcpu([])
         </Col>
         <Col lg='3' sm='12'>
           {flag2  ?
-            <SessionByDevice primary={'#868282'}
-              warning={'#EF97C6'}
-              danger={context.colors.danger.main}
-              warning={'#EF97C6'}
-              danger={context.colors.danger.main}
-              name={mem.length ? mem[1][0].Title : ''}
-              type={''}
-              range={mem.length ? mem[1][0].data : [0, 0]}
-              units={mem.length ? mem[1][0].Title : ''}
-              lineData={ mem.length  ? mem[0] : []}
-            /> : null}
+  <Card style={{cursor:'pointer'}}
+  onClick={() => {
+    setmodaldta(mem.length  ? mem[0] : [])
+    setmodalname(mem.length ? mem[1][0].Title : '')
+
+    setBasicModal(!basicModal)
+    
+    }}
+  >
+  {/* <CardHeader className='align-items-end float-right justify-content-end '>
+    <CardTitle tag='h4'>{ props.name}</CardTitle>            
+  </CardHeader> */}
+  <CardSubtitle tag='h6' className='d-flex justify-content-center align-items-center mt-1 '>{mem.length ? mem[1][0].Title : ''}</CardSubtitle>
+
+   {/* <CardSubtitle tag='h6'  className='ml-2'>in {props.type}</CardSubtitle> */}
+  <CardBody>
+    <Row>
+      {/* <Col lg='5' sm='12'>
+
+    <Chart className='my-1' options={options} series={series !== undefined ? [series[1], series[0]] : [0, 0]} type='donut' height={200} />
+    <CardSubtitle tag='h2' className='d-flex justify-content-center align-items-center -mt-2x'>{series !== undefined ? series[1] : 0}</CardSubtitle>
+    <CardSubtitle tag='h4' className='d-flex justify-content-center align-items-center mt-1'>{props.units}{props.type}</CardSubtitle>
+    
+    </Col> */}
+    <Col lg='12' sm='0'>
+    <ChartjsLineChart 
+     warningColorShade='#ffa500'
+        lineChartDanger='#ff4961'
+        lineChartPrimary='#666ee8'
+          labelColor="#b4b7bd"
+          tooltipShadow={"rgba(0, 0, 0, 0.25)"}
+          lineData ={mem.length  ? mem[0] : []}
+         // lineData={props !== undefined && props.lineData !== undefined && props.lineData.length ? props.lineData : []}
+          gridLineColor="rgba(200, 200, 200, 0.2)" />
+         </Col>
+        </Row>
+    {/* {renderChartInfo()} */}
+    
+     
+  </CardBody>
+</Card>
+          
+            // <SessionByDevice primary={'#868282'}
+            //   warning={'#EF97C6'}
+            //   danger={context.colors.danger.main}
+            //   warning={'#EF97C6'}
+            //   danger={context.colors.danger.main}
+            //   name={mem.length ? mem[1][0].Title : ''}
+            //   type={''}
+            //   range={mem.length ? mem[1][0].data : [0, 0]}
+            //   units={mem.length ? mem[1][0].Title : ''}
+            //   lineData={ mem.length  ? mem[0] : []}
+            // /> 
+            
+            : null}
 
 
         </Col>
         {read.map(i =>
       <Col lg='3' sm='12'>
-        <Card>
+        <Card 
+        style={{cursor:'pointer'}}
+        onClick={() => {
+          setmodaldta(i)
+          setmodalname('Disk Read')
+
+          setBasicModal(!basicModal)
+          
+          }}>
         <CardSubtitle tag='h6' className='d-flex justify-content-center align-items-center mt-1 '>Disk Read</CardSubtitle>
 
         {flag4 ?
@@ -608,7 +744,14 @@ setcpu([])
         )}
              {write.map(i =>
         <Col lg='3' sm='12'>
-        <Card>
+        <Card 
+        style={{cursor:'pointer'}}
+        onClick={() => {
+          setmodaldta(i)
+          setmodalname('Disk Write')
+          setBasicModal(!basicModal)
+          
+          }}>
         <CardSubtitle tag='h6' className='d-flex justify-content-center align-items-center mt-1 '>Disk Write</CardSubtitle>
           {flag5 ?
          
@@ -631,10 +774,10 @@ setcpu([])
  
       <CardSubtitle tag='h6' className='d-flex justify-content-center align-items-center mt-1 '>Process</CardSubtitle>
        {/* <CardSubtitle tag='h6'  className='ml-2'>in {props.type}</CardSubtitle> */}
-      <CardBody>
+      <CardBody className="scroll">
         <Row>
           <Col lg='12' sm='12' >
-            {process.map((item) => <div className={item.status === 'Green' ? 'p- bg-success mye2 rounded ' : 'bg-danger mye2 rounded' } style={{marginTop:'-2px', padding:'4px 7px 7px 7px'}}>
+            {process.map((item) => <div className={item.status === 'Green' ? 'p- bg-success mye2 rounded ' : 'bg-danger mye2 rounded' } style={{marginTop:'2px', padding:'4px 7px 7px 7px'}}>
       {/* <CardTitle tag='h4'className='ml-10 mt-2 d-flex align-items-center justify-content-center' style={{color:'white', fontWeight:600}}>Service : {'item'}</CardTitle>      */}
       <CardSubtitle tag='h6'  className='ml-10 mtw-1 d-flex align-items-center justify-content-center' style={{color:'white', marginTop:'5px', fontSize:12}}>{item.Process_Name}</CardSubtitle> 
          
@@ -658,10 +801,10 @@ setcpu([])
       <CardSubtitle tag='h6' className='d-flex justify-content-center align-items-center mt-1 '>Services</CardSubtitle>
 
        {/* <CardSubtitle tag='h6'  className='ml-2'>in {props.type}</CardSubtitle> */}
-      <CardBody>
+      <CardBody className="scroll">
         <Row>
-          <Col lg='12' sm='12' >
-            {services2.map((item) => <div className={item.status === 'Green' ? 'p- bg-success mye2 rounded ' : 'bg-danger mye2 rounded' } style={{marginTop:'-2px', padding:'4px 7px 7px 7px'}}>
+          <Col lg='12' sm='12'>
+            {services2.map((item) => <div  className={item.status === 'Green' ? 'p- bg-success mye2 rounded ' : 'bg-danger mye2 rounded' } style={{marginTop:'2px', padding:'4px 7px 7px 7px'}}>
       {/* <CardTitle tag='h4'className='ml-10 mt-2 d-flex align-items-center justify-content-center' style={{color:'white', fontWeight:600}}>Service : {'item'}</CardTitle>      */}
       <CardSubtitle tag='h6'  className='ml-10 mtw-1 d-flex align-items-center justify-content-center' style={{color:'white', marginTop:'5px', fontSize:12}}>{item.service_name}</CardSubtitle> 
          
@@ -690,6 +833,21 @@ setcpu([])
       <Row className='match-height'>
 
            </Row>
+           <Modal isOpen={basicModal} toggle={() => setBasicModal(!basicModal)}   className={`modal-dialog-centered modal-lg`}>
+          <ModalHeader toggle={() => setBasicModal(!basicModal)}>{modalname}</ModalHeader>
+          <ModalBody>
+          <ChartjsLineChartModel 
+           warningColorShade='#ffa500'
+           lineChartDanger='#ff4961'
+           lineChartPrimary='#666ee8'
+            labelColor="#b4b7bd"
+            tooltipShadow={"rgba(0, 0, 0, 0.25)"}
+            gridLineColor="rgba(200, 200, 200, 0.2)"
+            lineData={modaldta} />
+          
+          </ModalBody>
+         
+        </Modal>
       {/* <Row className='match-height'> 
   
         <Col lg='4' sm='12'>

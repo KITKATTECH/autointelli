@@ -25,11 +25,11 @@ import Os from './os_dashoard'
 const TemplateTitle = '%s - AutoIntelli'
 
 // ** Default Route
-const DefaultRoute = '/executive_summary'
+const DefaultRoute = '/os_dashboard'
 
 // ** Merge Routes
 const Routes = [
-  ...DashboardRoutes,
+  ...DashboardRoutes, 
   ...AppRoutes,
   ...PagesRoutes,
   ...UiElementRoutes,

@@ -39,7 +39,7 @@ const SessionByDevice = props => {
           show: false
         }
       },
-      labels: ['free', 'useage'],
+      labels: ['free', 'usage'],
       dataLabels: {
         enabled: false
       },

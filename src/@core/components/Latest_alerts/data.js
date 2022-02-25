@@ -317,7 +317,7 @@ export const serverSideColumns = [
 // ** Table Adv Search Column
 export const advSearchColumns = [
   {
-    name: 'Serverity',
+    name: 'Severity',
     selector: 'current_state',
     sortable: true,
     minWidth: '100px ',

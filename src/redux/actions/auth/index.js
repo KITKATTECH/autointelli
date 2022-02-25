@@ -1,7 +1,9 @@
 // ** UseJWT import to get config
 import useJwt from '@src/auth/jwt/useJwt'
+import { Link, useHistory } from 'react-router-dom'
 
 const config = useJwt.jwtConfig
+//const history = useHistory()
 
 // ** Handle User Login
 export const handleLogin = data => {
@@ -20,9 +22,12 @@ export const handleLogin = data => {
     localStorage.setItem(config.storageRefreshTokenKeyName, JSON.stringify(data.refreshToken))
   }
 }
-
 // ** Handle User Logout
 export const handleLogout = () => {
+  console.log('logout')
+ 
+//console.log('history', history)
+  
   return dispatch => {
     dispatch({ type: 'LOGOUT', [config.storageTokenKeyName]: null, [config.storageRefreshTokenKeyName]: null })
 

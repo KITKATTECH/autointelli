@@ -76,7 +76,7 @@ const UsersList = () => {
     
 {/* <Breadcrumb breadCrumbTitle='Policies' breadCrumbParent='Home' breadCrumbActive='Policies' /> */}
 <Row as Card className='match-height mb-2'> 
-                    <h2 className='content-header-title1 float-left ml-2 mb-2'>Monitored Servers </h2> 
+                    <h2 className='content-header-title1 float-left ml-2 mb-0'>Monitored Servers </h2> 
 </Row>
 <Row className='match-height'> 
         {/* Stats With Icons Horizontal */}

@@ -4,7 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'react
 const ModalBasic = () => {
   const [basicModal, setBasicModal] = useState(false)
   const [centeredModal, setCenteredModal] = useState(false)
-  const [disabledModal, setDisabledModal] = useState(false)
+  const [disabledModal, setDisabledModal] = useState(false) 
   const [disabledAnimation, setDisabledAnimation] = useState(false)
 
   return (

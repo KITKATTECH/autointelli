@@ -27,7 +27,7 @@ const DataTableAdvSearch = (props) => {
   const [searchPost, setSearchPost] = useState('')
   const [searchCity, setSearchCity] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
-  const [showrows, setshowrows] = useState(5)
+  const [showrows, setshowrows] = useState(10)
   const [searchEmail, setSearchEmail] = useState('')
   const [searchSalary, setSearchSalary] = useState('')
   const [filteredData, setFilteredData] = useState([])
@@ -316,8 +316,8 @@ const handlePerPage = e => {
       <Card>
         {/* <CardHeader className='border-bottom'>
         </CardHeader> */}
-        <CardBody>
-        <CardTitle tag='h4'>Filters</CardTitle>
+        <CardBody style={{padding:'0.5rem'}}>
+        {/* <CardTitle tag='h4'>Filters</CardTitle> */}
 {/* 
           <Row form className='mt-1 mb-50'>
             <Col lg='4' md='6'>
@@ -346,7 +346,7 @@ const handlePerPage = e => {
             </Col>
             </Row> */}
         </CardBody>
-        <Row className='mx-0 mt-1 mb-50'>
+        <Row className='mx-0 mt-1 mb-1'>
           <Col sm='6'>
             <div className='d-flex align-items-center'>
               <Label for='sort-select'>show</Label>

@@ -316,8 +316,8 @@ const handlePerPage = e => {
       <Card>
         {/* <CardHeader className='border-bottom'>
         </CardHeader> */}
-        <CardBody>
-        <CardTitle tag='h4'>Filters</CardTitle>
+        <CardBody style={{padding:'0.5rem'}}>
+        {/* <CardTitle tag='h4'>Filters</CardTitle> */}
 {/* 
           <Row form className='mt-1 mb-50'>
             <Col lg='4' md='6'>
@@ -346,8 +346,8 @@ const handlePerPage = e => {
             </Col>
             </Row> */}
         </CardBody>
-        <Row className='mx-0 mt-1 mb-50'>
-          <Col sm='6'>
+        <Row className='mx-0 mt-0 mb-1 float-right'>
+          {/* <Col sm='6'>
             <div className='d-flex align-items-center'>
               <Label for='sort-select'>show</Label>
               <Input
@@ -366,8 +366,8 @@ const handlePerPage = e => {
               </Input>
               <Label for='sort-select'>entries</Label>
             </div>
-          </Col>
-          <Col className='d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1' sm='6'>
+          </Col> */}
+          <Col className='d-flex align-items-center justify-content-sm-end mt-sm-0 mt-0' lg="12"sm='6'>
             {/* <Label className='mr-1' for='search-input'>
               Search
             </Label> */}

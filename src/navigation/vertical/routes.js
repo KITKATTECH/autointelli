@@ -2,28 +2,28 @@ import { User, Grid, Settings, BarChart2, Box, FileText, Mail, FileMinus, Slider
 
 export default [
  
-  {
-    id: 'oC',
-    title: 'Operation Center',
-    icon: <Grid size={20} />,
-    navLink: '/executive_summary',
-    children: [
-      {
-            id: 'eS',
-            title: 'Executive Summary',
-            icon: <Circle />,
-           navLink: '/executive_summary'
-         //   newTab: true
-          }
-          // {
-          //   id: 'oV',
-          //   title: 'Operations view',
-          //   icon: <Circle />
-          //  // navLink: '/pages/login-v2',
-          //  // newTab: true
-          // }
-    ]
-  },
+  // {
+  //   id: 'oC',
+  //   title: 'Operation Center',
+  //   icon: <Grid size={20} />,
+  //   navLink: '/executive_summary',
+  //   children: [
+  //     {
+  //           id: 'eS',
+  //           title: 'Executive Summary',
+  //           icon: <Circle />,
+  //          navLink: '/executive_summary'
+  //        //   newTab: true
+  //         }
+  //         // {
+  //         //   id: 'oV',
+  //         //   title: 'Operations view',
+  //         //   icon: <Circle />
+  //         //  // navLink: '/pages/login-v2',
+  //         //  // newTab: true
+  //         // }
+  //   ]
+  // },
 
   // {
   //   id: 'iM',
@@ -54,13 +54,13 @@ export default [
     icon: <Menu size={20} />,
     navLink: '/dashboard/ecommerce',
     children: [
-      {
-            id: 'hD',
-            title: 'Host Detail',
-            icon: <Circle />,
-            navLink: '/hostdetails'
-         //   newTab: true
-          },
+      // {
+      //       id: 'hD',
+      //       title: 'Host Detail',
+      //       icon: <Circle />,
+      //       navLink: '/hostdetails'
+      //    //   newTab: true
+      //     },
           {
             id: 'hD',
             title: 'OS Dashboard',

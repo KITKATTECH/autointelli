@@ -4,3 +4,8 @@
 .flatpickr-months , .flatpickr-prev-month{
     display: none !important;
 }
+.scroll{
+    min-height: 100px;
+    max-height: 300px;
+    overflow: auto;
+}
