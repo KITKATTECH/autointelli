@@ -1,0 +1,6 @@
+.avg-session-progress{
+    width: 600px !important;
+}
+.flatpickr-months , .flatpickr-prev-month{
+    display: none !important;
+}

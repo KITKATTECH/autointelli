@@ -1,6 +1,6 @@
 // ** React Import
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 // ** Custom Components
 import Sidebar from '@components/sidebar'
 
@@ -15,11 +15,17 @@ import { Button, FormGroup, Label, FormText, Form, Input } from 'reactstrap'
 // ** Store & Actions
 //import { addUser } from ' store/action'
 import { useDispatch } from 'react-redux'
+import Apiurl from '../../../configs/RootAPI_url'
 
 const SidebarNewUsers = ({ open, toggleSidebar }) => {
   // ** States
   const [role, setRole] = useState('subscriber')
   const [plan, setPlan] = useState('basic')
+  const [listClass, setlistClass] = useState([])
+  const [subClass, setsubClass] = useState([])
+  const [listClassid, setlistClassid] = useState('')
+
+  const [subClassid, setsubClassid] = useState('')
 
   // ** Store Vars
   const dispatch = useDispatch()
@@ -27,11 +33,48 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
   // ** Vars
   const { register, errors, handleSubmit } = useForm()
 
+  const getListClass = () => {
+    axios.get(`${Apiurl}systemconfig/appmanagement/list_class`).then(response => response.data).then(result => {
+      console.log(result.message)
+      setlistClass(result.message)
+    }, error => {
+      console.log(error)
+    })
+  }
+  const getSubClass = () => {
+    axios.get(`${Apiurl}systemconfig/appmanagement/list_subclass`).then(response => response.data).then(result => {
+      console.log(result.message)
+      setsubClass(result.message)
+    }, error => {
+      console.log(error)
+    })
+  }
+  useEffect(() => {
+    getListClass()
+    getSubClass()
+  }, [])
   // ** Function to handle form submit
-  const onSubmit = values => {
+  const onSubmit = value => {
     if (isObjEmpty(errors)) {
-      toggleSidebar()
-      dispatch(
+      //toggleSidebar()
+      const data =
+      {
+        appname: value.appname,
+        appclassid: listClassid,
+        appsubclassid: subClassid
+      
+      }
+console.log(data)
+     
+        axios.post(`${Apiurl}systemconfig/appmanagement/application`, data).then(response => response.data).then(result => {
+          console.log(result.message)
+          console.log(result.message)
+//setuserList(result.message)
+          toggleSidebar()
+        }, error => {
+          console.log(error)
+        })
+      //dispatch(
         // addUser({
         //   fullName: values['full-name'],
         //   company: values.company,
@@ -44,7 +87,7 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
         //   status: 'active',
         //   avatar: ''
         // })
-      )
+     // )
     }
   }
 
@@ -59,98 +102,46 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup>
-          <Label for='full-name'>
+          <Label for='appname'>
             Application Name <span className='text-danger'>*</span>
           </Label>
           <Input
-            name='full-name'
-            id='full-name'
+            name='appname'
+            id='appname'
             placeholder='Excel'
             innerRef={register({ required: true })}
-            className={classnames({ 'is-invalid': errors['full-name'] })}
+            className={classnames({ 'is-invalid': errors['appname'] })}
           />
         </FormGroup>
-        {/* <FormGroup>
-          <Label for='username'>
-            Application Id <span className='text-danger'>*</span>
-          </Label>
-          <Input
-            name='username'
-            id='username'
-            placeholder='johnDoe99'
-            innerRef={register({ required: true })}
-            className={classnames({ 'is-invalid': errors['username'] })}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='email'>
-            Email <span className='text-danger'>*</span>
-          </Label>
-          <Input
-            type='email'
-            name='email'
-            id='email'
-            placeholder='john.doe@example.com'
-            innerRef={register({ required: true })}
-            className={classnames({ 'is-invalid': errors['email'] })}
-          />
-          <FormText color='muted'>You can use letters, numbers & periods</FormText>
-        </FormGroup>
-        <FormGroup>
-          <Label for='company'>
-            Company <span className='text-danger'>*</span>
-          </Label>
-          <Input
-            name='company'
-            id='company'
-            placeholder='Company Pvt Ltd'
-            innerRef={register({ required: true })}
-            className={classnames({ 'is-invalid': errors['company'] })}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='country'>
-            Country <span className='text-danger'>*</span>
-          </Label>
-          <Input
-            name='country'
-            id='country'
-            placeholder='Australia'
-            innerRef={register({ required: true })}
-            className={classnames({ 'is-invalid': errors['country'] })}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='contact'>
-            Contact <span className='text-danger'>*</span>
-          </Label>
-          <Input
-            name='contact'
-            id='contact'
-            placeholder='(397) 294-5153'
-            innerRef={register({ required: true })}
-            className={classnames({ 'is-invalid': errors['contact'] })}
-          />
-        </FormGroup> */}
-        <FormGroup>
-          <Label for='user-role'>Application Type</Label>
-          <Input type='select' id='user-role' name='user-role' value={role} onChange={e => setRole(e.target.value)}>
-            <option value='subscriber'>Subscriber</option>
+     
+         <FormGroup>
+          <Label for='listClass'>Application Class</Label>
+          <Input type='select' id='listClass' name='listClass' innerRef={register({ required: true, validate: value => value !== '' })} value={listClassid} onChange={e => setlistClassid(e.target.value)}>
+          <option value=''>Select Application  Class</option>
+           
+            {listClass.map(i => <option value={i.classid}>{i.class}</option>
+            )}
+            {/* <option value='subscriber'>Subscriber</option>
             <option value='editor'>Editor</option>
             <option value='maintainer'>Maintainer</option>
-            <option value='author'>Author</option>
-            <option value='admin'>Admin</option>
+            <option value='author'>Author</option> */}
+            {/* <option value='Administrator'>Administrator</option> */}
           </Input>
-        </FormGroup>
-        <FormGroup className='mb-2' value={plan} onChange={e => setPlan(e.target.value)}>
-          <Label for='select-plan'>Status</Label>
-          <Input type='select' id='select-plan' name='select-plan'>
-            <option value='basic'>Ok</option>
-            <option value='enterprise'>Critical</option>
-            <option value='company'>Completed</option>
-            <option value='team'>In Progress</option>
+          </FormGroup>
+          <FormGroup>
+          <Label for='subClass'>Application Sub Class</Label>
+          <Input type='select' id='subClass' name='subClass' innerRef={register({ required: true, validate: value => value !== ''  })} value={subClassid} onChange={e => setsubClassid(e.target.value)}>
+          <option value=''>Select Application Sub Class</option>
+            {subClass.map(i => <option value={i.subclassid}>{i.subclass}</option>
+            )}
+            {/* <option value='subscriber'>Subscriber</option>
+            <option value='editor'>Editor</option>
+            <option value='maintainer'>Maintainer</option>
+            <option value='author'>Author</option> */}
+            {/* <option value='Administrator'>Administrator</option> */}
           </Input>
-        </FormGroup>
+          </FormGroup>
+      
         <Button type='submit' className='mr-1' color='primary'>
           Submit
         </Button>

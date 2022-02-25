@@ -4,7 +4,7 @@
 const themeConfig = {
   app: {
     appName: '',
-    appLogoImage: require('@src/assets/images/logo/autointelli.jpeg').default
+    appLogoImage: require('@src/assets/images/logo/autointelli.png').default
   },
   layout: {
     isRTL: false,

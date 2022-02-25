@@ -58,7 +58,7 @@ const ForgotPasswordV1 = () => {
                   </g>
                 </g>
               </svg>
-              <img src={`${process.env.PUBLIC_URL  }autointelli.jpeg`} alt="logo"/>
+              <img src={`${process.env.PUBLIC_URL  }autointelli.png`} alt="logo"/>
             </Link>
             <CardTitle tag='h4' className='mb-1'>
               Forgot Password? 🔒

@@ -1,8 +1,8 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 
 // ** Table Columns
-import { data, advSearchColumns } from './data'
+import {  advSearchColumns } from './data'
 
 // ** Third Party Components
 import Flatpickr from 'react-flatpickr'
@@ -11,9 +11,11 @@ import { ChevronDown } from 'react-feather'
 import DataTable from 'react-data-table-component'
 import { Card, CardHeader, CardBody, CardTitle, Input, Label, FormGroup, Row, Col, Button } from 'reactstrap'
 import Sidebar from './Sidebar'
+import Apiurl from '../../../configs/RootAPI_url'
+
 // ** Styles
 import '@styles/react/libs/flatpickr/flatpickr.scss'
-
+import axios from 'axios'
 const DataTableAdvSearch = () => {
   // ** States
   const [Picker, setPicker] = useState('')
@@ -25,9 +27,35 @@ const DataTableAdvSearch = () => {
   const [searchSalary, setSearchSalary] = useState('')
   const [filteredData, setFilteredData] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [showrows, setshowrows] = useState(5)
+
   // ** Function to handle Pagination
   const handlePagination = page => setCurrentPage(page.selected)
+  const [data, setdata] = useState([])
+  //const [roles, setroles] = useState([])
+  //const [roles, setroles] = useState([])
+  //const context = useContext(props)
+  //console.log(props)
+  const getAllApps = () => {
+    axios.get(`${Apiurl}systemconfig/appmanagement/application`).then(response => response.data).then(result => {
+      //console.log(result.message)
+      setdata(result.message)
+     
+      //console.log(result.message.length, count1, count2)
+   //   props.userListcount(result.message.length, count1, count2)
+    }, error => {
+      console.log(error)
+    })
+  }
 
+ 
+  useEffect(() => {
+    getAllApps()
+  }, [sidebarOpen])
+  useEffect(() => {
+    getAllApps()
+  //  getAllRoles()
+  }, [])
   // ** Table data to render
   const dataToRender = () => {
     if (
@@ -312,8 +340,8 @@ const handlePerPage = e => {
                 className='dataTable-select'
                 type='select'
                 id='sort-select'
-                value={5}
-               //onChange={e => handlePerPage(e)}
+                value={showrows}
+                onChange={e => setshowrows(e.target.value)}
               >
                 <option value={5}>5</option>
                 <option value={10}>10</option>
@@ -350,10 +378,11 @@ const handlePerPage = e => {
           </Col> */}
         </Row>
         <DataTable
+        
           noHeader
           pagination
           columns={advSearchColumns}
-          paginationPerPage={7}
+          paginationPerPage={showrows}
           className='react-dataTable'
           sortIcon={<ChevronDown size={10} />}
           paginationDefaultPage={currentPage + 1}

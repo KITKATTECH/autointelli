@@ -55,7 +55,7 @@ const ComingSoon = () => {
             </g>
           </g>
         </svg>
-        <img src={`${process.env.PUBLIC_URL  }autointelli.jpeg`} alt="logo"/>
+        <img src={`${process.env.PUBLIC_URL  }autointelli.png`} alt="logo"/>
       </a>
       <div className='misc-inner p-2 p-sm-3'>
         <div className='w-100 text-center'>

@@ -60,6 +60,13 @@ export default [
             icon: <Circle />,
             navLink: '/hostdetails'
          //   newTab: true
+          },
+          {
+            id: 'hD',
+            title: 'OS Dashboard',
+            icon: <Circle />,
+            navLink: '/os_dashboard'
+         //   newTab: true
           }
       //     {
       //       id: 'sD2',
@@ -118,14 +125,29 @@ export default [
             icon: <Circle />,
             navLink: '/configuration_wizards'
          //   newTab: true
+          },
+          {
+            id: 'Ms',
+            title: 'Server Monitor',
+            icon: <Circle />,
+            navLink: '/server_monitor'
+           // newTab: true
+      }
+    ]
+  },
+  {
+    id: 'c',
+    title: 'Incident Management',
+    icon: <Tool size={20} />,
+    navLink: '/dashboard/ecommerce',
+    children: [
+      {
+            id: 'cW',
+            title: 'Latest Alerts',
+            icon: <Circle />,
+            navLink: '/latest_alert'
+         //   newTab: true
           }
-      //     {
-      //       id: 'AuD',
-      //       title: 'Auto Discovery',
-      //       icon: <Circle />,
-      //       navLink: ''
-      //      // newTab: true
-      // }
     ]
   }
   // {

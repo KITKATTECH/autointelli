@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import {  Fragment, useState, useEffect } from 'react'
 
 // ** Table Columns
 import { data, advSearchColumns } from './data'
@@ -11,23 +11,63 @@ import { ChevronDown } from 'react-feather'
 import DataTable from 'react-data-table-component'
 import { Card, CardHeader, CardBody, CardTitle, Input, Label, FormGroup, Row, Col, Button } from 'reactstrap'
 import Sidebar from './Sidebar'
+import axios from 'axios'
 // ** Styles
 import '@styles/react/libs/flatpickr/flatpickr.scss'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+import Apiurl from '../../../configs/RootAPI_url'
 
-const DataTableAdvSearch = () => {
+const MySwal = withReactContent(Swal)
+
+const DataTableAdvSearch = (props) => {
   // ** States
   const [Picker, setPicker] = useState('')
   const [searchName, setSearchName] = useState('')
   const [searchPost, setSearchPost] = useState('')
   const [searchCity, setSearchCity] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
+  const [showrows, setshowrows] = useState(5)
   const [searchEmail, setSearchEmail] = useState('')
   const [searchSalary, setSearchSalary] = useState('')
   const [filteredData, setFilteredData] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false)
   // ** Function to handle Pagination
   const handlePagination = page => setCurrentPage(page.selected)
+  const [data, setdata] = useState([])
+  const [roles, setroles] = useState([])
+  //const [roles, setroles] = useState([])
+  //const context = useContext(props)
+  console.log(props)
+  const getAllUsers = () => {
+    axios.get(`${Apiurl}users/`).then(response => response.data).then(result => {
+      console.log(result.message)
+      setdata(result.message)
+      let count1 = 0
+      let count2 = 0
+      result.message.forEach(element => {
+        if (
+          element.status === 'Active') {
+          count1 += 1
+        } else {
+          count2 += 1
+        }
+           })
+      //console.log(result.message.length, count1, count2)
+      props.userListcount(result.message.length, count1, count2)
+    }, error => {
+      console.log(error)
+    })
+  }
 
+ 
+  useEffect(() => {
+    getAllUsers()
+  }, [sidebarOpen])
+  useEffect(() => {
+    getAllUsers()
+  //  getAllRoles()
+  }, [])
   // ** Table data to render
   const dataToRender = () => {
     if (
@@ -43,6 +83,7 @@ const DataTableAdvSearch = () => {
       return data
     }
   }
+  console.log(sidebarOpen)
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
   // ** Custom Pagination
   const CustomPagination = () => (
@@ -51,8 +92,9 @@ const DataTableAdvSearch = () => {
       nextLabel={''}
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={dataToRender().length / 7 || 1}
+      pageCount={dataToRender().length / showrows || 1}
       breakLabel={'...'}
+      pagination
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
       activeClassName={'active'}
@@ -83,9 +125,9 @@ const DataTableAdvSearch = () => {
     setSearchName(value)
     if (value.length) {
       updatedData = dataToFilter().filter(item => {
-        const startsWith = item.full_name.toLowerCase().startsWith(value.toLowerCase())
+        const startsWith = item.displayname.toLowerCase().startsWith(value.toLowerCase())
 
-        const includes = item.full_name.toLowerCase().includes(value.toLowerCase())
+        const includes = item.displayname.toLowerCase().includes(value.toLowerCase())
 
         if (startsWith) {
           return startsWith
@@ -276,7 +318,7 @@ const handlePerPage = e => {
         </CardHeader> */}
         <CardBody>
         <CardTitle tag='h4'>Filters</CardTitle>
-
+{/* 
           <Row form className='mt-1 mb-50'>
             <Col lg='4' md='6'>
               <FormGroup>
@@ -302,7 +344,7 @@ const handlePerPage = e => {
                 <Input id='post' placeholder='Designation' value={searchPost} onChange={handlePostFilter} />
               </FormGroup>
             </Col>
-            </Row>
+            </Row> */}
         </CardBody>
         <Row className='mx-0 mt-1 mb-50'>
           <Col sm='6'>
@@ -312,8 +354,8 @@ const handlePerPage = e => {
                 className='dataTable-select'
                 type='select'
                 id='sort-select'
-                value={5}
-               //onChange={e => handlePerPage(e)}
+                value={showrows}
+               onChange={e => setshowrows(e.target.value)}
               >
                 <option value={5}>5</option>
                 <option value={10}>10</option>
@@ -326,10 +368,10 @@ const handlePerPage = e => {
             </div>
           </Col>
           <Col className='d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1' sm='6'>
-            <Label className='mr-1' for='search-input'>
+            {/* <Label className='mr-1' for='search-input'>
               Search
-            </Label>
-            <Input
+            </Label> */}
+            {/* <Input
               className='dataTable-filter'
               type='text'
               bsSize='md'
@@ -337,7 +379,8 @@ const handlePerPage = e => {
               placeholder="Search"
               //value={searchValue}
               //onChange={handleFilter}
-            />
+            /> */}
+            <Input   className='dataTable-filter'   bsSize='md' id='name' placeholder='Search' value={searchName} onChange={handleNameFilter} />
             <Button.Ripple  color='primary' className='ml-2' onClick={toggleSidebar}>
             Add New User
           </Button.Ripple>
@@ -353,7 +396,7 @@ const handlePerPage = e => {
           noHeader
           pagination
           columns={advSearchColumns}
-          paginationPerPage={7}
+          paginationPerPage={showrows}
           className='react-dataTable'
           sortIcon={<ChevronDown size={10} />}
           paginationDefaultPage={currentPage + 1}

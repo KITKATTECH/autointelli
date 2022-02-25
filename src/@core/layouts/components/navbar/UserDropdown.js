@@ -70,11 +70,11 @@ const UserDropdown = () => {
         <DropdownItem tag={Link} to='/pages/pricing'>
           <CreditCard size={14} className='mr-75' />
           <span className='align-middle'>Pricing</span>
-        </DropdownItem>
-        <DropdownItem tag={Link} to='/pages/faq'>
-          <HelpCircle size={14} className='mr-75' />
-          <span className='align-middle'>FAQ</span>
         </DropdownItem> */}
+        <DropdownItem tag={Link} to='/changepassword'>
+          <HelpCircle size={14} className='mr-75' />
+          <span className='align-middle'>Profile</span>
+        </DropdownItem>
         <DropdownItem tag={Link} to='/login' onClick={() => dispatch(handleLogout())}>
           <Power size={14} className='mr-75' />
           <span className='align-middle'>Logout</span>

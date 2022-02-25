@@ -292,29 +292,47 @@ export const serverSideColumns = [
 
 // ** Table Adv Search Column
 export const advSearchColumns = [
-  {
-    name: 'Application Name',
-    selector: 'full_name',
-    sortable: true,
-    minWidth: '200px'
-  },
+ 
   {
     name: 'Application Id',
-    selector: 'email',
+    selector: 'appid',
     sortable: true,
     minWidth: '250px'
   },
   {
-    name: 'Type',
-    selector: 'post',
+    name: 'Application Name',
+    selector: 'appname',
+    sortable: true,
+    minWidth: '200px'
+  },
+  {
+    name: 'Classs',
+    selector: 'appclass',
+    sortable: true,
+    minWidth: '250px'
+  },
+  {
+    name: 'Sub Classs',
+    selector: 'appsubclasss',
     sortable: true,
     minWidth: '250px'
   },
   {
     name: 'Status',
-    selector: 'city',
+    selector: 'status',
     sortable: true,
-    minWidth: '150px'
+    minWidth: '150px',
+    cell: row => {
+      return (
+        <Badge color={row.status === 'Active' ? 'light-success' : 'light-danger'}  pill>
+        {row.status}
+      </Badge>
+        // <Button.Ripple color={row.status === 'Active' ? 'success' : 'danger'} className='hoverChange' >
+        //   {row.status}
+        // </Button.Ripple>
+        // </Badge>
+      )
+    }
   }
   // {
   //   name: 'Date',

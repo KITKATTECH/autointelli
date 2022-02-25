@@ -1,5 +1,5 @@
-import { useContext } from 'react'
-import { Activity, DownloadCloud, FilePlus, FileText, List, Sunset, UserCheck, UserMinus, UserPlus, Users } from 'react-feather'
+import { useContext, useState, useEffect } from 'react'
+import { Activity, DownloadCloud, FilePlus, FileText, List, Sunset, UserCheck, UserMinus, UserPlus, Users, UserX } from 'react-feather'
 import { kFormatter } from '@utils'
 import { Link } from 'react-router-dom'
 import Avatar from '@components/avatar'
@@ -20,12 +20,34 @@ import SubscribersGained from '@src/views/ui-elements/cards/statistics/Subscribe
 import StatsHorizontal from '@components/widgets/stats/StatsHorizontal'
 import '@styles/react/libs/charts/apex-charts.scss'
 import DataTableAdvSearch from './TableAdvSearch'
-
+import axios from 'axios'
+import Apiurl from '../../../configs/RootAPI_url'
 const UsersList = () => {
   const { colors } = useContext(ThemeColors)
+  const [userList, setuserList] = useState([])
+  const [userListCount, setuserListCount] = useState('0')
+  const [activeuserListCount, activesetuserListCount] = useState('0')
+  const [inactiveuserListCount, inactivesetuserListCount] = useState('0')
 
   const context = useContext(ThemeColors)
- 
+  const getAllUsers = () => {
+    axios.get(`${Apiurl}users/`).then(response => response.data).then(result => {
+      console.log(result.message)
+      setuserList(result.message)
+    }, error => {
+      console.log(error)
+    })
+  }
+
+  useEffect(() => {
+    //getAllUsers()
+  }, [])
+ const handleCount = (count, count1, count2) => {
+    setuserListCount(count)
+    activesetuserListCount(count1)
+    inactivesetuserListCount(count2)
+    console.log(count, count1, count2)
+}
   return (
     <div id='dashboard-analytics'>
          
@@ -44,17 +66,17 @@ const UsersList = () => {
 {/* <Breadcrumb breadCrumbTitle='Policies' breadCrumbParent='Home' breadCrumbActive='Policies' /> */}
 <Row className='match-height'> 
         {/* Stats With Icons Horizontal */}
-        <Col lg='3' sm='6'>
-          <StatsHorizontal icon={<Users size={21} />} color='primary' stats='120' statTitle='Users' />
+        <Col lg='4' sm='6'>
+          <StatsHorizontal icon={<Users size={21} />} color='primary' stats={userListCount} statTitle='Total Users' />
         </Col>
-        <Col lg='3' sm='6'>
-          <StatsHorizontal icon={<UserPlus size={21} />} color='success' stats='80' statTitle='Paid Users' />
+        {/* <Col lg='4' sm='6'>
+          <StatsHorizontal icon={<UserPlus size={21} />} color='success' stats={userListCount} statTitle='Paid Users' />
+        </Col> */}
+        <Col lg='4' sm='6'>
+          <StatsHorizontal icon={<UserCheck size={21} />} color='success' stats={activeuserListCount}statTitle='Active Users' />
         </Col>
-        <Col lg='3' sm='6'>
-          <StatsHorizontal icon={<UserMinus size={21} />} color='danger' stats='40' statTitle='Active Users' />
-        </Col>
-        <Col lg='3' sm='6'>
-          <StatsHorizontal icon={<DownloadCloud size={21} />} color='primary' stats='120'  statTitle='E-Card Issued' />
+        <Col lg='4' sm='6'>
+          <StatsHorizontal icon={<UserX size={21} />} color='danger' stats={inactiveuserListCount}  statTitle='InActive/Disabled Users' />
         </Col>
         {/* Stats With Icons Horizontal */}
       </Row>
@@ -73,7 +95,7 @@ const UsersList = () => {
        */}
        <Row className='match-height'>
         <Col xs='12'>
-          <DataTableAdvSearch />
+          <DataTableAdvSearch userListcount={handleCount} />
         </Col>
       </Row>
      {/* <Row className='match-height'>

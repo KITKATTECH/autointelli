@@ -20,7 +20,7 @@ import SubscribersGained from '@src/views/ui-elements/cards/statistics/Subscribe
 import StatsHorizontal from '@components/widgets/stats/StatsHorizontal'
 import '@styles/react/libs/charts/apex-charts.scss'
 import SettingsForm from './ValidationSchema'
-
+import DataTableAdvSearch from './TableAdvSearch'
 const UsersList = () => {
   const { colors } = useContext(ThemeColors)
 
@@ -29,10 +29,10 @@ const UsersList = () => {
   return (
     <div id='dashboard-analytics'>
       <Row as Card className='match-height mb-2'> 
-                    <h2 className='content-header-title1 float-left mb-2'>SMTP Details </h2> 
+                    <h2 className='content-header-title1 float-left mb-2 ml-2'>SMTP Details </h2> 
 </Row>
       
-      <Row as Card className='match-height mb-2'> 
+      {/* <Row as Card className='match-height mb-2'> 
         <Col lg='3' sm='0'>
 
       </Col>   <Col lg='6' sm='0'>
@@ -40,8 +40,12 @@ const UsersList = () => {
       </Col>   <Col lg='3' sm='0'>
  
       </Col>
-         </Row>
-
+         </Row> */}
+         <Row className='match-height'>
+        <Col xs='12'>
+          <DataTableAdvSearch />
+        </Col>
+      </Row>
       
       {/* <Row className='match-height'>
         <Col lg='6' sm='12'>

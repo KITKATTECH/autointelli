@@ -4,15 +4,20 @@ import Avatar from '@components/avatar'
 // ** Third Party Components
 import axios from 'axios'
 import { MoreVertical, Edit, FileText, Archive, Trash } from 'react-feather'
-import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button, CustomInput} from 'reactstrap'
+//import Button from 'reactstrap/lib/Button'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+import Apiurl from '../../../configs/RootAPI_url'
 
+const MySwal = withReactContent(Swal)
 // ** Vars
 const states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary']
 
 const status = {
-  1: { title: 'Current', color: 'light-primary' },
-  2: { title: 'Professional', color: 'light-success' },
-  3: { title: 'Rejected', color: 'light-danger' },
+  1: { title: 'Active', color: 'light-success' },
+  2: { title: 'InActive', color: 'light-danger' },
+  3: { title: 'Disable', color: 'light-danger' },
   4: { title: 'Resigned', color: 'light-warning' },
   5: { title: 'Applied', color: 'light-info' }
 }
@@ -20,10 +25,27 @@ const status = {
 export let data
 
 // ** Get initial Data
-axios.get('/api/datatables/initial-data').then(response => {
-  data = response.data
-})
+// axios.get('http://192.168.1.200:5000/users/').then(response => response.data).then(result => {
+//   console.log(result.message)
+  
+//   data = result.message
+// }, error => {
+//   console.log(error)
+// })
+let flag = false
 
+const onChange = (val) => {
+  console.log(val)
+  axios.delete(`${Apiurl}users/${val}`).then(response => response.data).then(result => {
+  console.log(result.message)
+  
+ flag = true
+ return true
+}, error => {
+  console.log(error)
+  return false
+})
+}
 // ** Table Zero Config Column
 export const basicColumns = [
   {
@@ -292,43 +314,136 @@ export const serverSideColumns = [
 
 // ** Table Adv Search Column
 export const advSearchColumns = [
+ 
   {
     name: 'Name',
-    selector: 'full_name',
+    selector: 'displayname',
     sortable: true,
     minWidth: '200px'
   },
   {
     name: 'Email',
-    selector: 'email',
+    selector: 'emailid',
     sortable: true,
     minWidth: '250px'
   },
   {
-    name: 'Post',
-    selector: 'post',
+    name: 'Role',
+    selector: 'role',
     sortable: true,
     minWidth: '250px'
   },
   {
-    name: 'City',
-    selector: 'city',
+    name: 'Auth Type',
+    selector: 'authtype',
     sortable: true,
     minWidth: '150px'
   },
   {
-    name: 'Date',
-    selector: 'start_date',
+    name: 'Status',
+    selector: 'status',
     sortable: true,
-    minWidth: '150px'
+    minWidth: '150px',
+    cell: row => {
+      return (
+        <Badge color={row.status === 'Active' ? 'light-success' : 'light-danger'}  pill>
+        {row.status}
+      </Badge>
+        // <Button.Ripple color={row.status === 'Active' ? 'success' : 'danger'} className='hoverChange' >
+        //   {row.status}
+        // </Button.Ripple>
+        // </Badge>
+      )
+    }
   },
+  {
+    name: 'Active/Disable',
+    selector: 'status',
+    sortable: true,
+    minWidth: '150px',
+    cell: row => {
+      return (
+        // <Badge color={row.status ==='Active'?'light-success': 'light-danger'}  pill>
+        //   <Button tag='a' href='/' className='w-100' onClick={e => e.preventDefault()}>
 
-  {
-    name: 'Salary',
-    selector: 'salary',
-    sortable: true,
-    minWidth: '100px'
+        //         <span className='align-middle ml-50'>{row.status}</span>
+        //       </Button>
+        <Button.Ripple color={row.status === 'Active' ? 'danger' : 'success'} className='hoverChange' onClick={() => {
+         // console.log(val)
+
+         MySwal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Disable it!',
+          customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-danger ml-1'
+          },
+          buttonsStyling: false
+        }).then(function (result) {
+          if (result.value) {
+            axios.delete(`http://192.168.1.200:5000/users/${row.username}`).then(response => response.data).then(result => {
+              MySwal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: 'User is Disabled.',
+                customClass: {
+                  confirmButton: 'btn btn-success'
+                }
+              })
+              setTimeout(() => {
+                console.log(result.message)
+                row.status = 'Disabled'
+                window.location.reload(false)
+              }, 2000)
+            
+            }, error => {
+              console.log(error)
+             
+            })
+           
+          } else if (result.dismiss === MySwal.DismissReason.cancel) {
+            MySwal.fire({
+              title: 'Cancelled',
+              text: 'User is Active.',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-success'
+              }
+            })
+          }
+        })
+         
+         // console.log(val)
+        
+        }} >
+          {row.status ===  'Active' ? "InActive" : 'Active'}
+        </Button.Ripple>
+        // </Badge>
+      )
+    }
   }
+  // {
+  //   name: 'City',
+  //   selector: 'city',
+  //   sortable: true,
+  //   minWidth: '150px'
+  // },
+  // {
+  //   name: 'Date',
+  //   selector: 'start_date',
+  //   sortable: true,
+  //   minWidth: '150px'
+  // },
+
+  // {
+  //   name: 'Salary',
+  //   selector: 'salary',
+  //   sortable: true,
+  //   minWidth: '100px'
+  // }
 ]
 
 export default ExpandableTable

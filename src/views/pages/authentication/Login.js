@@ -11,7 +11,8 @@ import { AbilityContext } from '@src/utility/context/Can'
 import { Link, useHistory } from 'react-router-dom'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { getHomeRouteForLoggedInUser, isObjEmpty } from '@utils'
-import { Facebook, Twitter, Mail, GitHub, HelpCircle, Coffee } from 'react-feather'
+import { Facebook, Twitter, Mail, GitHub, HelpCircle, Coffee, AlertCircle } from 'react-feather'
+import axios from 'axios'
 import {
   Alert,
   Row,
@@ -28,6 +29,7 @@ import {
 } from 'reactstrap'
 
 import '@styles/base/pages/page-auth.scss'
+import Apiurl from '../../../configs/RootAPI_url'
 
 const ToastContent = ({ name, role }) => (
   <Fragment>
@@ -38,18 +40,30 @@ const ToastContent = ({ name, role }) => (
       </div>
     </div>
     <div className='toastify-body'>
-      <span>You have successfully logged in as an {role} user to Vuexy. Now you can start to explore. Enjoy!</span>
+      <span>You have successfully logged in as an {role} user to Autointelli.</span>
     </div>
   </Fragment>
 )
-
+const ToastErrorContent = ({ info }) => (
+  <Fragment>
+    <div className='toastify-header'>
+      <div className='title-wrapper'>
+        <Avatar size='sm' color='danger' icon={<AlertCircle size={12} />} />
+        <h6 className='toast-title font-weight-bold light-danger text-danger'>Error</h6>
+      </div>
+    </div>
+    <div className='toastify-body'>
+      <span className='text-danger'>{info}</span>
+    </div>
+  </Fragment>
+)
 const Login = props => {
   const [skin, setSkin] = useSkin()
   const ability = useContext(AbilityContext)
   const dispatch = useDispatch()
   const history = useHistory()
-  const [email, setEmail] = useState('admin@demo.com')
-  const [password, setPassword] = useState('admin')
+  const [email, setEmail] = useState('admin')
+  const [password, setPassword] = useState('Welcome@2022')
 
   const { register, errors, handleSubmit } = useForm()
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
@@ -57,19 +71,60 @@ const Login = props => {
 
   const onSubmit = data => {
     if (isObjEmpty(errors)) {
-      useJwt
-        .login({ email, password })
-        .then(res => {
-          const data = { ...res.data.userData, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken }
+      // useJwt
+      //   .login({ email, password })
+      //   .then(res => {
+      //     const data = { ...res.data.userData, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken }
+      //     console.log(data)
+      //     dispatch(handleLogin(data))
+      //     ability.update(res.data.userData.ability)
+      //     history.push(getHomeRouteForLoggedInUser(data.role))
+      //     toast.success(
+      //       <ToastContent name={data.fullName || data.username || 'John Doe'} role={data.role || 'admin'} />,
+      //       { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+      //     )
+      //   })
+
+      //   .catch(err => console.log(err))
+     // console
+
+     //console.log(Apiurl.production)
+     console.log(Apiurl)
+
+      axios.post(`${Apiurl}users/login`, {
+        username: email,
+        password
+      }).then(response => response.data).then(result => {
+        if (result.type === 'error') {
+          toast.success(
+            <ToastErrorContent info={result.message || 'error'} />,
+            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+          )
+        } else {
+          const data = {
+            fullName: result.data.displayname,
+            extras: { eCommerceCartItemsCount: 5 },
+            email: result.data.emailid,
+            avatar: '/static/media/avatar-s-11.1d46cc62.jpg',
+            accessToken: result.session_key,
+            ability: [{ action: 'manage', subject: 'all' }],
+            id: result.data.userid,
+            refreshToken: result.session_key,
+            role: 'admin', //result.data.role
+            username: result.data.displayname,
+            fullusername: result.data.username
+          }
           dispatch(handleLogin(data))
-          ability.update(res.data.userData.ability)
+          ability.update(data.ability)
           history.push(getHomeRouteForLoggedInUser(data.role))
           toast.success(
             <ToastContent name={data.fullName || data.username || 'John Doe'} role={data.role || 'admin'} />,
             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
           )
-        })
-        .catch(err => console.log(err))
+        }
+      }, error => {
+        console.log(error)
+      })
     }
   }
 
@@ -125,7 +180,7 @@ const Login = props => {
               </g>
             </g>
           </svg> */}
-          <img src={`${process.env.PUBLIC_URL  }autointelli.jpeg`} alt="logo" width={150}/>
+          <img src={`${process.env.PUBLIC_URL}autointelli.png`} alt="logo" width={150} />
         </Link>
         <Col className='d-none d-lg-flex align-items-center p-5' lg='8' sm='12'>
           <div className='w-100 d-lg-flex align-items-center justify-content-center px-5'>
@@ -135,10 +190,10 @@ const Login = props => {
         <Col className='d-flex align-items-center auth-bg px-2 p-lg-5' lg='4' sm='12'>
           <Col className='px-xl-2 mx-auto' sm='8' md='6' lg='12'>
             <CardTitle tag='h2' className='font-weight-bold mb-1 d-flex justify-content-center'>
-          Welcome
+              Welcome
             </CardTitle>
-             <CardTitle tag='h3' className='font-weight-bold mb-1'>
-           Please sign-in to your account
+            <CardTitle tag='h3' className='font-weight-bold mb-1'>
+              Please sign-in to your account
             </CardTitle>
             {/* <CardText className='mb-2'>Please sign-in to your account </CardText>  */}
             {/* <Alert color='primary'>
@@ -167,18 +222,18 @@ const Login = props => {
             <Form className='auth-login-form mt-2' onSubmit={handleSubmit(onSubmit)}>
               <FormGroup>
                 <Label className='form-label' for='login-email'>
-                  Email
+                  Username
                 </Label>
                 <Input
                   autoFocus
-                  type='email'
+                  //type='email'
                   value={email}
                   id='login-email'
                   name='login-email'
                   placeholder='john@example.com'
                   onChange={e => setEmail(e.target.value)}
-                  className={classnames({ 'is-invalid': errors['login-email'] })}
-                  innerRef={register({ required: true, validate: value => value !== '' })}
+                //className={classnames({ 'is-invalid': errors['login-email'] })}
+                // innerRef={register({ required: true, validate: value => value !== '' })}
                 />
               </FormGroup>
               <FormGroup>

@@ -1,11 +1,15 @@
 // ** Third Party Components
 import PropTypes from 'prop-types'
-import { Card, CardBody } from 'reactstrap'
-
+import { Card, CardBody, Button } from 'reactstrap'
+import { Link, useHistory } from 'react-router-dom'
 const StatsHorizontal = ({ icon, color, stats, statTitle, className, ...rest }) => {
+  const history = useHistory()
   return (
-    <Card>
-      <CardBody className={className}>
+    // <Button.Ripple color='' >
+    <Card >
+         
+      <CardBody className={className} onClick={() => history.push('/setup_Agent')}>
+
         <div className='d-flex justify-content-between align-items-center'>
           <div>
             <h4 className='font-weight-bolder mb-0'>{stats}</h4>
@@ -15,8 +19,11 @@ const StatsHorizontal = ({ icon, color, stats, statTitle, className, ...rest }) 
             <div className='avatar-content'>{icon}</div>
           </div>
         </div>
+       
       </CardBody>
+
     </Card>
+    // </Button.Ripple>
   )
 }
 

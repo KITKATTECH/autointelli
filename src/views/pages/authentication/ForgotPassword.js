@@ -1,16 +1,57 @@
 import { isUserLoggedIn } from '@utils'
+import { useState, useContext, Fragment } from 'react'
+import Avatar from '@components/avatar'
+//import { Facebook, Twitter, Mail, GitHub, HelpCircle, Coffee } from 'react-feather'
+import { useForm } from 'react-hook-form'
+
 import { useSkin } from '@hooks/useSkin'
-import { ChevronLeft } from 'react-feather'
+import { ChevronLeft, Coffee } from 'react-feather'
 import { Link, Redirect } from 'react-router-dom'
+import { toast, Slide } from 'react-toastify'
 import { Row, Col, CardTitle, CardText, Form, FormGroup, Label, Input, Button } from 'reactstrap'
 import '@styles/base/pages/page-auth.scss'
+import axios from 'axios'
 
 const ForgotPassword = () => {
   const [skin, setSkin] = useSkin()
+  const { register, errors, handleSubmit } = useForm()
 
+  const ToastContent = ({ info }) => (
+    <Fragment>
+      <div className='toastify-header'>
+        <div className='title-wrapper'>
+          <Avatar size='sm' color='success' icon={<Coffee size={12} />} />
+          <h6 className='toast-title font-weight-bold'>Hi</h6>
+        </div>
+      </div>
+      <div className='toastify-body'>
+        <span>{info}</span>
+      </div>
+    </Fragment>
+  )
   const illustration = skin === 'dark' ? 'forgot-password-v2-dark.svg' : 'forgot-password-v2.svg',
     source = require(`@src/assets/images/pages/${illustration}`).default
 
+    const onSubmit = () => {
+     
+        axios.post(`http://192.168.1.200:5000/users/reset-password/${'admin'}`, {
+         
+        }).then(response => response.data).then(result => {
+        
+       
+          toast.success(
+            <ToastContent info={result.message} />,
+            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+          )
+        }, error => {
+          console.log(error)
+          toast.success(
+            <ToastContent msg={error.message} />,
+            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+          )
+        })
+      
+    }
   if (!isUserLoggedIn()) {
     return (
       <div className='auth-wrapper auth-v2'>
@@ -64,7 +105,7 @@ const ForgotPassword = () => {
                 </g>
               </g>
             </svg>*/}
-            <img src={`${process.env.PUBLIC_URL  }autointelli.jpeg`} alt="logo" width={150}/>
+            <img src={`${process.env.PUBLIC_URL  }autointelli.png`} alt="logo" width={150}/>
           </Link>
           <Col className='d-none d-lg-flex align-items-center p-5' lg='8' sm='12'>
             <div className='w-100 d-lg-flex align-items-center justify-content-center px-5'>
@@ -79,14 +120,14 @@ const ForgotPassword = () => {
               <CardText className='mb-2'>
                 Enter your email and we'll send you instructions to reset your password
               </CardText>
-              <Form className='auth-forgot-password-form mt-2' onSubmit={e => e.preventDefault()}>
+              <Form className='auth-forgot-password-form mt-2' onSubmit={handleSubmit(onSubmit)}>
                 <FormGroup>
                   <Label className='form-label' for='login-email'>
                     Email
                   </Label>
                   <Input type='email' id='login-email' placeholder='john@example.com' autoFocus />
                 </FormGroup>
-                <Button.Ripple color='primary' block>
+                <Button.Ripple color='primary' block type="submit">
                   Send reset link
                 </Button.Ripple>
               </Form>

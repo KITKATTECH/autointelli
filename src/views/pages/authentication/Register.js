@@ -136,7 +136,7 @@ const Register = () => {
               </g>
             </g>
           </svg>
-          <img src={`${process.env.PUBLIC_URL  }autointelli.jpeg`} alt="logo"/>
+          <img src={`${process.env.PUBLIC_URL  }autointelli.png`} alt="logo"/>
         </Link>
         <Col className='d-none d-lg-flex align-items-center p-5' lg='8' sm='12'>
           <div className='w-100 d-lg-flex align-items-center justify-content-center px-5'>

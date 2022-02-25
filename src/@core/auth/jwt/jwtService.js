@@ -24,6 +24,8 @@ export default class JwtService {
         if (accessToken) {
           // ** eslint-disable-next-line no-param-reassign
           config.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`
+          config.headers['Session-Key'] = `${accessToken}`
+         
         }
         return config
       },
@@ -58,6 +60,7 @@ export default class JwtService {
               // ** Check: https://pixinvent.ticksy.com/ticket/2413870
               // ** Change Authorization header
               originalRequest.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`
+              originalRequest.headers['Session-Key'] = `${accessToken}`
               resolve(this.axios(originalRequest))
             })
           })
